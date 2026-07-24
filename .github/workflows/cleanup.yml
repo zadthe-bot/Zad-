@@ -1,0 +1,41 @@
+name: Clean up repo structure
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Remove scattered/stray files
+        run: |
+          rm -rf Cistomer Res User lib profile_screen.dart
+
+      - name: Extract Customer.zip
+        run: |
+          if [ -f Customer.zip ]; then
+            unzip -o Customer.zip -d .
+            rm Customer.zip
+          else
+            echo "Customer.zip not found — skipping extract."
+          fi
+
+      - name: Show resulting structure
+        run: |
+          echo "--- Repo structure after cleanup ---"
+          find . -maxdepth 3 -not -path './.git*' | sort
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "Nothing to commit" || git commit -m "Clean up repo structure"
+          git push
