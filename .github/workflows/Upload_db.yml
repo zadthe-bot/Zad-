@@ -1,4 +1,4 @@
-name: Upload JSON to Firebase Firestore
+name: Upload Restaurants To Firestore
 
 on:
   workflow_dispatch:
@@ -16,11 +16,11 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install Firebase library
+      - name: Install Firebase Admin SDK
         run: |
           pip install firebase-admin
 
-      - name: Run Database.py
+      - name: Upload JSON
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
